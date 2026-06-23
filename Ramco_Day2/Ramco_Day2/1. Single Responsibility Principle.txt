@@ -1,0 +1,243 @@
+1. Single Responsibility Principle (SRP)
+❌ Bad
+
+
+✅ Good
+
+2. Open Closed Principle (OCP)
+❌ Bad
+class AreaCalculator {
+
+    double area(String shape) {
+
+        if(shape.equals("circle"))
+            return 3.14 * 5 * 5;
+
+        if(shape.equals("square"))
+            return 4 * 4;
+
+        return 0;
+    }
+}
+
+public class OCPBad {
+    public static void main(String[] args) {
+
+        AreaCalculator a = new AreaCalculator();
+        System.out.println(a.area("circle"));
+    }
+}
+✅ Good
+interface Shape {
+    double area();
+}
+
+class Circle implements Shape {
+
+    public double area() {
+        return 3.14 * 5 * 5;
+    }
+}
+
+class Square implements Shape {
+
+    public double area() {
+        return 4 * 4;
+    }
+}
+
+public class OCPGood {
+    public static void main(String[] args) {
+
+        Shape s = new Circle();
+        System.out.println(s.area());
+    }
+}
+Output
+78.5
+
+
+
+3. Liskov Substitution Principle (LSP)
+❌ Bad
+class Bird {
+
+    void fly() {
+        System.out.println("Bird can fly");
+    }
+}
+
+class Penguin extends Bird {
+
+    void fly() {
+        throw new RuntimeException("Penguin can't fly");
+    }
+}
+
+public class LSPBad {
+    public static void main(String[] args) {
+
+        Bird b = new Penguin();
+        b.fly();
+    }
+}
+✅ Good
+class Bird {
+}
+
+class FlyingBird extends Bird {
+
+    void fly() {
+        System.out.println("Flying");
+    }
+}
+
+class Penguin extends Bird {
+
+    void swim() {
+        System.out.println("Swimming");
+    }
+}
+
+public class LSPGood {
+    public static void main(String[] args) {
+
+        Penguin p = new Penguin();
+        p.swim();
+    }
+}
+Output
+Swimming
+4. Interface Segregation Principle (ISP)
+❌ Bad
+interface Worker {
+
+    void work();
+
+    void eat();
+
+    void sleep();
+}
+
+class Robot implements Worker {
+
+    public void work() {
+        System.out.println("Working");
+    }
+
+    public void eat() {
+        System.out.println("Cannot Eat");
+    }
+
+    public void sleep() {
+        System.out.println("Cannot Sleep");
+    }
+}
+
+public class ISPBad {
+    public static void main(String[] args) {
+
+        Robot r = new Robot();
+        r.work();
+    }
+}
+✅ Good
+interface Workable {
+    void work();
+}
+
+interface Eatable {
+    void eat();
+}
+
+interface Sleepable {
+    void sleep();
+}
+
+class Robot implements Workable {
+
+    public void work() {
+        System.out.println("Robot Working");
+    }
+}
+
+public class ISPGood {
+    public static void main(String[] args) {
+
+        Robot r = new Robot();
+        r.work();
+    }
+}
+Output
+Robot Working
+5. Dependency Inversion Principle (DIP)
+❌ Bad
+class EmailService {
+
+    void send() {
+        System.out.println("Email Sent");
+    }
+}
+
+class Notification {
+
+    EmailService email = new EmailService();
+
+    void notifyUser() {
+        email.send();
+    }
+}
+
+public class DIPBad {
+    public static void main(String[] args) {
+
+        Notification n = new Notification();
+        n.notifyUser();
+    }
+}
+✅ Good
+interface MessageService {
+
+    void send();
+}
+
+class EmailService implements MessageService {
+
+    public void send() {
+        System.out.println("Email Sent");
+    }
+}
+
+
+class SMSService implements MessageService {
+
+    public void send() {
+        System.out.println("SMS Sent");
+    }
+}
+
+class Notification {
+
+    MessageService service;
+
+    Notification(MessageService service) {
+        this.service = service;
+    }
+
+    void notifyUser() {
+        service.send();
+    }
+}
+
+public class DIPGood {
+    public static void main(String[] args) {
+
+        MessageService service = new EmailService();
+
+        Notification n = new Notification(service);
+
+        n.notifyUser();
+    }
+}
+Output
+Email Sent
